@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 # Allowed frontend origins. The protocol and port must match the frontend URL.
-origins = ["https://localhost:300"]
+origins = ["https://localhost:3000"]
 
 # Configure CORS so the browser can make requests from the frontend.
 app.add_middleware(
