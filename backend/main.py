@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from model import Todo
 
 app = FastAPI()
 
@@ -15,34 +16,58 @@ app.add_middleware(
     allow_headers=["*"],     # Allow all request headers.
 )
 
-# Currently return 1 as a placeholder; 
+# Database functions used by the routes below.
+from database import (
+    fetch_all_todos,
+    fetch_one_todo,
+    create_todo,
+    update_todo,
+    remove_todo,
+)
 
 
 @app.get("/api/todo")
 async def get_todo():
-    # Return all todos once the database is connected
-    return 1
+    # Fetch and return all todos from the database.
+    response = await fetch_all_todos()
+    return response
 
 
-@app.get("/api/todo/{id}")
-async def get_todo_by_id(id):
-    # The id comes from the URL
-    return 1
+@app.get("/api/todo/{title}", response_model=Todo)
+async def get_todo_by_id(title):
+    # Search using the title from the URL. Return 404 if not found.
+    response = await fetch_one_todo(title)
+    if response:
+        return response
+    else:
+        raise HTTPException(404, f"No TODO item with this title {title}")
 
 
-@app.post("/api/todo")
-async def post_todo(todo):
-    # Will receive the new todo and save it to the database.
-    return 1
+@app.post("/api/todo", response_model=Todo)
+async def post_todo(todo: Todo):
+    # Convert the validated request to a dictionary and save it.
+    response = await create_todo(todo.model_dump())
+    if response:
+        return response
+    else:
+        raise HTTPException(400, "Bad request")
 
 
-@app.put("/api/todo/{id}")
-async def put_todo(id, data):
-    # Use id to find the todo and data to update its fields.
-    return 1
+@app.put("/api/todo/{title}/", response_model=Todo)
+async def put_todo(title: str, description: str):
+    # Find by title and update the description.
+    response = await update_todo(title, description)
+    if response:
+        return response
+    else:
+        raise HTTPException(404, f"No TODO item with this title {title}")
 
 
-@app.delete("/api/todo/{id}")
-async def delete_todo(id):
-    # Find the todo by its id and remove it from the database.
-    return 1
+@app.delete("/api/todo/{title}")
+async def delete_todo(title):
+    # Delete the todo with the given title.
+    response = await remove_todo(title)
+    if response:
+        return "Succesfully deleted TODO item"
+    else:
+        raise HTTPException(404, f"No TODO item with this title {title}")
