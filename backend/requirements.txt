@@ -1,0 +1,5 @@
+fastapi == 0.65.1 or higher
+
+uvicorn == 0.14.0 or higher
+
+motor == 2.4.0 or higher
