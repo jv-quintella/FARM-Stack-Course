@@ -5,7 +5,7 @@ from model import Todo
 app = FastAPI()
 
 # Allowed frontend origins. The protocol and port must match the frontend URL.
-origins = ["https://localhost:3000"]
+origins = ["http://localhost:3000"]
 
 # Configure CORS so the browser can make requests from the frontend.
 app.add_middleware(
