@@ -23,12 +23,17 @@ function App() {
   }, []); 
 
   // Send a new todo to the backend using the form values.
-  const addTodoHandler = () => {
+const addTodoHandler = () => {
     axios.post('http://localhost:8000/api/todo/', {
       'title': title,
       'description': desc
     })
-      .then(res => console.log(res));
+      .then(res => {
+        axios.get('http://localhost:8000/api/todo')
+          .then(res => {
+            setTodoList(res.data);
+          });
+      });
   };
 
   // Render the application layout, task form, and todo list.

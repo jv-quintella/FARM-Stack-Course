@@ -36,9 +36,8 @@ async def update_todo(title, description):
         {"title": title},
         {"$set": {"description": description}}
     )
-    document = await collection.find_one("{title}:title")
+    document = await collection.find_one({"title": title})
     return document
-
 
 async def remove_todo(title):
     # Delete the first todo matching the title.
